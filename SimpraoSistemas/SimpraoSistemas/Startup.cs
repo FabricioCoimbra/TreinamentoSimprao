@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SimpraoSistemas.Context;
 
 namespace SimpraoSistemas
 {
@@ -18,12 +20,16 @@ namespace SimpraoSistemas
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			var sqlConnectionString = Configuration.GetConnectionString("DataAccessPostgreSqlProvider");
+
+			services.AddDbContext<SimpraoContext>(opt => opt.UseNpgsql(sqlConnectionString));
+
+
 			services.Configure<CookiePolicyOptions>(options =>
 			{
 				options.CheckConsentNeeded = context => true;
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
-
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
